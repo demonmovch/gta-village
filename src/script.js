@@ -5,10 +5,15 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 // styles
 import './style.css';
 // constants
-import { WALLS_HEIGHT, WALLS_WIDTH } from './constants';
+import { WALLS_HEIGHT } from './constants';
 // objectsCreators
-import { createBox, createSphere, defaultContactMaterial } from './objectsCreators/objectsCreators';
-import { createHouse } from './objectsCreators/houseCreator';
+import {
+  createHouse,
+  createFloor,
+  createBox,
+  createSphere,
+  defaultContactMaterial,
+} from './objectsCreators';
 
 const canvas = document.querySelector('#webgl');
 const objectsToUpdate = [];
@@ -24,53 +29,17 @@ world.allowSleep = true;
 world.gravity.set(0, -9.82, 0);
 world.defaultContactMaterial = defaultContactMaterial;
 
-/* Textures */
-const textureLoader = new THREE.TextureLoader();
-
-const grassColorTexture = textureLoader.load('/textures/grass/color.jpg');
-const grassAmbientOcclusionTexture = textureLoader.load('/textures/grass/ambientOcclusion.jpg');
-const grassNormalTexture = textureLoader.load('/textures/grass/normal.jpg');
-const grassRoughnessTexture = textureLoader.load('/textures/grass/roughness.jpg');
-
-grassColorTexture.repeat.set(8, 8);
-grassAmbientOcclusionTexture.repeat.set(8, 8);
-grassNormalTexture.repeat.set(8, 8);
-grassRoughnessTexture.repeat.set(8, 8);
-grassColorTexture.wrapS = THREE.RepeatWrapping;
-grassAmbientOcclusionTexture.wrapS = THREE.RepeatWrapping;
-grassNormalTexture.wrapS = THREE.RepeatWrapping;
-grassRoughnessTexture.wrapS = THREE.RepeatWrapping;
-grassColorTexture.wrapT = THREE.RepeatWrapping;
-grassAmbientOcclusionTexture.wrapT = THREE.RepeatWrapping;
-grassNormalTexture.wrapT = THREE.RepeatWrapping;
-grassRoughnessTexture.wrapT = THREE.RepeatWrapping;
-
-// Floor cannon.js
-const floorShape = new CANNON.Plane();
-const floorBody = new CANNON.Body();
-floorBody.mass = 0;
-floorBody.addShape(floorShape);
-floorBody.quaternion.setFromAxisAngle(new CANNON.Vec3(-1, 0, 0), Math.PI * 0.5);
-world.addBody(floorBody);
-
-// Floor three.js
-const floor = new THREE.Mesh(
-  new THREE.PlaneGeometry(20, 20),
-  new THREE.MeshStandardMaterial({
-    map: grassColorTexture,
-    aoMap: grassAmbientOcclusionTexture,
-    normalMap: grassNormalTexture,
-    roughnessMap: grassRoughnessTexture,
-  })
-);
-floor.geometry.setAttribute(
-  'uv2',
-  new THREE.Float32BufferAttribute(floor.geometry.attributes.uv.array, 2)
-);
-floor.rotation.x = -Math.PI * 0.5;
-scene.add(floor);
-
+createFloor({ scene, world });
 createSphere({ radius: 1, position: { x: 3, y: 10, z: 0 }, scene, world, objectsToUpdate });
+createBox({
+  width: 0.12,
+  height: WALLS_HEIGHT,
+  depth: 2,
+  position: { x: 8, y: WALLS_HEIGHT / 2, z: 1 },
+  scene,
+  world,
+  objectsToUpdate,
+});
 createBox({
   width: 1,
   height: 1.5,
@@ -121,7 +90,6 @@ directionalLight.shadow.camera.top = 20;
 directionalLight.shadow.camera.right = 20;
 directionalLight.shadow.camera.bottom = -20;
 directionalLight.shadow.camera.left = -20;
-floor.receiveShadow = true;
 
 // Helpers
 const directionalLightHelper = new THREE.DirectionalLightHelper(directionalLight, 1);

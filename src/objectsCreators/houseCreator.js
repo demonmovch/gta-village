@@ -5,8 +5,8 @@ import * as CANNON from 'cannon-es';
 import { WALLS_HEIGHT, WALLS_WIDTH, ROOF_HEIGHT, ROOF_WIDTH, DOOR_HEIGHT } from '../constants';
 // Sounds
 import { playHitSound } from '../audio';
-
-import { defaultMaterial } from './objectsCreators';
+// cannon.js material
+import { defaultMaterial } from './defaultMaterial';
 
 /* Textures */
 const textureLoader = new THREE.TextureLoader();
