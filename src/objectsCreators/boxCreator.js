@@ -17,6 +17,7 @@ export function createBox({ width, height, depth, position, scene, world, object
   const mesh = new THREE.Mesh(boxGeometry, boxMaterial);
   mesh.scale.set(width, height, depth);
   mesh.castShadow = true;
+  mesh.receiveShadow = true;
   mesh.position.copy(position);
   scene.add(mesh);
 

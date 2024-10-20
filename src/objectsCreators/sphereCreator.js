@@ -16,6 +16,7 @@ export function createSphere({ radius, position, scene, world, objectsToUpdate }
   // Three.js mesh
   const mesh = new THREE.Mesh(sphereGeometry, sphereMaterial);
   mesh.castShadow = true;
+  mesh.receiveShadow = true;
   mesh.scale.set(radius, radius, radius);
   mesh.position.copy(position);
   scene.add(mesh);

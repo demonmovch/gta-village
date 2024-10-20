@@ -30,6 +30,12 @@ world.gravity.set(0, -9.82, 0);
 world.defaultContactMaterial = defaultContactMaterial;
 
 createFloor({ scene, world });
+createHouse({
+  position: { x: 0, y: WALLS_HEIGHT / 2, z: 0 },
+  scene,
+  world,
+  objectsToUpdate,
+});
 createSphere({ radius: 1, position: { x: 3, y: 10, z: 0 }, scene, world, objectsToUpdate });
 createBox({
   width: 0.12,
@@ -45,12 +51,6 @@ createBox({
   height: 1.5,
   depth: 2,
   position: { x: 6, y: 5, z: 1 },
-  scene,
-  world,
-  objectsToUpdate,
-});
-createHouse({
-  position: { x: 0, y: WALLS_HEIGHT / 2, z: 0 },
   scene,
   world,
   objectsToUpdate,
