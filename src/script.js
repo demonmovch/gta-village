@@ -2,6 +2,7 @@
 import * as THREE from 'three';
 import * as CANNON from 'cannon-es';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import CannonDebugRenderer from 'cannon-es-debugger';
 // styles
 import './style.css';
 // constants
@@ -36,7 +37,7 @@ createHouse({
   world,
   objectsToUpdate,
 });
-createSphere({ radius: 1, position: { x: 3, y: 10, z: 0 }, scene, world, objectsToUpdate });
+//createSphere({ radius: 1, position: { x: 3, y: 10, z: 0 }, scene, world, objectsToUpdate });
 createBox({
   width: 0.12,
   height: WALLS_HEIGHT,
@@ -96,6 +97,7 @@ const directionalLightHelper = new THREE.DirectionalLightHelper(directionalLight
 //const directionalLightCameraHelper = new THREE.CameraHelper(directionalLight.shadow.camera);
 const axesHelper = new THREE.AxesHelper(20);
 scene.add(axesHelper, directionalLightHelper /*, directionalLightCameraHelper*/);
+const cannonDebugRenderer = new CannonDebugRenderer(scene, world);
 
 /* Animate */
 const clock = new THREE.Clock();
@@ -112,8 +114,9 @@ function tick() {
   });
 
   world.step(1 / 60, deltaTime, 3); // Update physics
+  cannonDebugRenderer.update(); // Update cannon.js debug renderer
   controls.update(); // Update controls
-  renderer.render(scene, camera); // Render
+  renderer.render(scene, camera); // Render the scene
   window.requestAnimationFrame(tick); // Call tick again on the next frame
 }
 
