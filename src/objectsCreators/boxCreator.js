@@ -35,4 +35,6 @@ export function createBox({ width, height, depth, position, scene, world, object
 
   // Save in objects
   objectsToUpdate.push({ mesh, body });
+
+  return { body };
 }

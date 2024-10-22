@@ -37,7 +37,7 @@ createHouse({
   world,
   objectsToUpdate,
 });
-//createSphere({ radius: 1, position: { x: 3, y: 10, z: 0 }, scene, world, objectsToUpdate });
+createSphere({ radius: 1, position: { x: 3, y: 10, z: 0 }, scene, world, objectsToUpdate });
 createBox({
   width: 0.12,
   height: WALLS_HEIGHT,
@@ -47,7 +47,7 @@ createBox({
   world,
   objectsToUpdate,
 });
-createBox({
+const { body: car } = createBox({
   width: 1,
   height: 1.5,
   depth: 2,
@@ -121,6 +121,12 @@ function tick() {
 }
 
 tick();
+
+document.addEventListener('keydown', (event) => {
+  if (event.key.toLowerCase() === 'arrowup') {
+    car.position.x = car.position.x + 0.01;
+  }
+});
 
 window.addEventListener('resize', () => {
   // Update sizes
