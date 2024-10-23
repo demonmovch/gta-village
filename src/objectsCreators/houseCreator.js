@@ -13,7 +13,7 @@ import {
 // Sounds
 import { playHitSound } from '../audio';
 // cannon.js material
-import { defaultMaterial } from './defaultMaterial';
+import { defaultMaterial } from '../materials';
 
 /* Textures */
 const textureLoader = new THREE.TextureLoader();

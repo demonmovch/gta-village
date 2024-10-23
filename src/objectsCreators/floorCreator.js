@@ -1,6 +1,8 @@
 // core
 import * as THREE from 'three';
 import * as CANNON from 'cannon-es';
+// cannon.js material
+import { defaultMaterial, wheelMaterial } from '../materials';
 
 /* Textures */
 const textureLoader = new THREE.TextureLoader();
@@ -45,6 +47,7 @@ export function createFloor({ scene, world }) {
   const floorShape = new CANNON.Plane();
   const floorBody = new CANNON.Body();
   floorBody.mass = 0;
+  floorBody.material = defaultMaterial;
   floorBody.addShape(floorShape);
   floorBody.quaternion.setFromEuler(-Math.PI * 0.5, 0, 0); // make it face up
   world.addBody(floorBody);

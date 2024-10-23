@@ -4,7 +4,7 @@ import * as CANNON from 'cannon-es';
 // Sounds
 import { playHitSound } from '../audio';
 // cannon.js material
-import { defaultMaterial } from './defaultMaterial';
+import { defaultMaterial } from '../materials';
 
 const sphereGeometry = new THREE.SphereGeometry(1, 20, 20);
 const sphereMaterial = new THREE.MeshStandardMaterial({
