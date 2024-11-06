@@ -13,7 +13,7 @@ import { createHouse, createFloor, createBox, createSphere } from './objectsCrea
 import {
   defaultMaterial,
   defaultContactMaterial,
-  wheelMaterial,
+  /*wheelMaterial,*/
   wheelContactMaterial,
 } from './materials';
 
@@ -41,14 +41,6 @@ const wheelOptions = {
 // Scene
 const scene = new THREE.Scene();
 
-const wheelGeometry = new THREE.CylinderGeometry(
-  wheelOptions.radius,
-  wheelOptions.radius,
-  wheelOptions.radius / 2,
-  20
-);
-const material = new THREE.MeshBasicMaterial({ color: '#000' });
-
 /* Physics */
 const world = new CANNON.World();
 world.broadphase = new CANNON.SAPBroadphase(world);
@@ -69,7 +61,7 @@ chassisMesh.scale.set(1 * 2, 0.25 * 2, 0.5 * 2);
 chassisMesh.position.set(7, 0, 5);
 chassisMesh.castShadow = true;
 chassisMesh.receiveShadow = true;
-//scene.add(chassisMesh);
+scene.add(chassisMesh);
 
 const chassisShape = new CANNON.Box(new CANNON.Vec3(1, 0.25, 0.5));
 const chassisBody = new CANNON.Body({
@@ -96,23 +88,19 @@ vehicle.addToWorld(world);
 
 // Add the wheel bodies
 const wheelBodies = [];
+const wheelMaterial = new CANNON.Material('wheel');
 vehicle.wheelInfos.forEach((wheel) => {
   const cylinderShape = new CANNON.Cylinder(wheel.radius, wheel.radius, wheel.radius / 2, 20);
-  const wheelBody = new CANNON.Body({ mass: 0, material: wheelMaterial });
+  const wheelBody = new CANNON.Body({
+    mass: 0,
+    material: wheelMaterial,
+  });
   wheelBody.type = CANNON.Body.KINEMATIC;
   wheelBody.collisionFilterGroup = 0; // turn off collisions
   const quaternion = new CANNON.Quaternion().setFromEuler(-Math.PI / 2, 0, 0);
   wheelBody.addShape(cylinderShape, new CANNON.Vec3(), quaternion);
   wheelBodies.push(wheelBody);
   world.addBody(wheelBody);
-
-  const wheelMesh = new THREE.Mesh(wheelGeometry, material);
-  wheelMesh.position.copy(wheelBody.position);
-  //wheelMesh.rotation.y = Math.PI / 4;
-  scene.add(wheelMesh);
-
-  // Save in objects
-  objectsToUpdate.push({ mesh: wheelMesh, body: wheelBody });
 });
 
 // Update the wheel bodies
@@ -135,7 +123,7 @@ createHouse({
   world,
   objectsToUpdate,
 });
-createSphere({ radius: 1, position: { x: 3, y: 10, z: 0 }, scene, world, objectsToUpdate });
+createSphere({ radius: 1, position: { x: 3, y: 10, z: 5 }, scene, world, objectsToUpdate });
 createBox({
   width: 0.12,
   height: WALLS_HEIGHT,
@@ -193,9 +181,9 @@ directionalLight.shadow.camera.left = -20;
 // Helpers
 const directionalLightHelper = new THREE.DirectionalLightHelper(directionalLight, 1);
 //const directionalLightCameraHelper = new THREE.CameraHelper(directionalLight.shadow.camera);
-const axesHelper = new THREE.AxesHelper(20);
-scene.add(axesHelper, directionalLightHelper /*, directionalLightCameraHelper*/);
-const cannonDebugRenderer = new CannonDebugRenderer(scene, world);
+//const axesHelper = new THREE.AxesHelper(20);
+//scene.add(axesHelper, directionalLightHelper /*, directionalLightCameraHelper*/);
+//const cannonDebugRenderer = new CannonDebugRenderer(scene, world);
 
 /* Animate */
 const clock = new THREE.Clock();
@@ -212,7 +200,7 @@ function animate() {
   });
 
   world.step(1 / 60, deltaTime, 3); // Update physics
-  cannonDebugRenderer.update(); // Update cannon.js debug renderer
+  //cannonDebugRenderer.update(); // Update cannon.js debug renderer
   controls.update(); // Update controls
   renderer.render(scene, camera); // Render the scene
   window.requestAnimationFrame(animate); // Call animate function again on the next frame

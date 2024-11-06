@@ -74,7 +74,7 @@ export function createHouse({ position, scene, world, objectsToUpdate }) {
     new THREE.MeshStandardMaterial({ color: '#b35f45' })
   );
   roof.position.copy({ ...position, y: WALLS_HEIGHT + ROOF_HEIGHT / 2 });
-  //roof.rotation.y = Math.PI / 4;
+  roof.rotation.y = Math.PI / 4;
   roof.castShadow = true;
   roof.receiveShadow = true;
 
@@ -143,7 +143,7 @@ export function createHouse({ position, scene, world, objectsToUpdate }) {
     material: defaultMaterial,
   });
   roofBody.position.copy(roof.position);
-  roofBody.quaternion.copy(roof.quaternion);
+  //roofBody.quaternion.copy(roof.quaternion);
   roofBody.addEventListener('collide', playHitSound);
   world.addBody(roofBody);
 
