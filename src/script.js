@@ -10,12 +10,7 @@ import { WALLS_HEIGHT } from './constants';
 // objectsCreators
 import { createHouse, createFloor, createBox, createSphere } from './objectsCreators';
 
-import {
-  defaultMaterial,
-  defaultContactMaterial,
-  /*wheelMaterial,*/
-  wheelContactMaterial,
-} from './materials';
+import { defaultMaterial, defaultContactMaterial, wheelContactMaterial } from './materials';
 
 const canvas = document.querySelector('#webgl');
 const objectsToUpdate = [];
@@ -181,9 +176,9 @@ directionalLight.shadow.camera.left = -20;
 // Helpers
 const directionalLightHelper = new THREE.DirectionalLightHelper(directionalLight, 1);
 //const directionalLightCameraHelper = new THREE.CameraHelper(directionalLight.shadow.camera);
-//const axesHelper = new THREE.AxesHelper(20);
-//scene.add(axesHelper, directionalLightHelper /*, directionalLightCameraHelper*/);
-//const cannonDebugRenderer = new CannonDebugRenderer(scene, world);
+const axesHelper = new THREE.AxesHelper(20);
+scene.add(axesHelper, directionalLightHelper /*, directionalLightCameraHelper*/);
+const cannonDebugRenderer = new CannonDebugRenderer(scene, world);
 
 /* Animate */
 const clock = new THREE.Clock();
@@ -200,7 +195,7 @@ function animate() {
   });
 
   world.step(1 / 60, deltaTime, 3); // Update physics
-  //cannonDebugRenderer.update(); // Update cannon.js debug renderer
+  cannonDebugRenderer.update(); // Update cannon.js debug renderer
   controls.update(); // Update controls
   renderer.render(scene, camera); // Render the scene
   window.requestAnimationFrame(animate); // Call animate function again on the next frame

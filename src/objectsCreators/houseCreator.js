@@ -69,12 +69,19 @@ function createWall(scene, world, objectsToUpdate) {
 export function createHouse({ position, scene, world, objectsToUpdate }) {
   //const house = new THREE.Group();
 
-  const roof = new THREE.Mesh(
-    new THREE.BoxGeometry(ROOF_WIDTH, ROOF_HEIGHT, ROOF_WIDTH),
-    new THREE.MeshStandardMaterial({ color: '#b35f45' })
-  );
+  // const roof = new THREE.Mesh(
+  //   new THREE.BoxGeometry(ROOF_WIDTH, ROOF_HEIGHT, ROOF_WIDTH),
+  //   new THREE.MeshStandardMaterial({ color: '#b35f45' })
+  // );
+  // roof.position.copy({ ...position, y: WALLS_HEIGHT /*+ ROOF_HEIGHT / 2*/ });
+  // roof.rotation.y = Math.PI / 4;
+  // roof.castShadow = true;
+  // roof.receiveShadow = true;
+
+  const geometry = new THREE.ConeGeometry(ROOF_WIDTH / 2, ROOF_HEIGHT, 4);
+  const material = new THREE.MeshBasicMaterial({ color: '#b35f45' });
+  const roof = new THREE.Mesh(geometry, material);
   roof.position.copy({ ...position, y: WALLS_HEIGHT + ROOF_HEIGHT / 2 });
-  roof.rotation.y = Math.PI / 4;
   roof.castShadow = true;
   roof.receiveShadow = true;
 
@@ -133,19 +140,54 @@ export function createHouse({ position, scene, world, objectsToUpdate }) {
   scene.add(roof, door);
 
   // Cannon.js body
-  const roofShape = new CANNON.Box(
-    new CANNON.Vec3(ROOF_WIDTH * 0.5, ROOF_HEIGHT * 0.5, ROOF_WIDTH * 0.5)
-  );
-  const roofBody = new CANNON.Body({
-    mass: 1,
-    position: new CANNON.Vec3(0, 0, 0),
-    shape: roofShape,
-    material: defaultMaterial,
+  // const roofShape = new CANNON.Box(
+  //   new CANNON.Vec3(ROOF_WIDTH * 0.5, ROOF_HEIGHT * 0.5, ROOF_WIDTH * 0.5)
+  // );
+  // const roofBody = new CANNON.Body({
+  //   mass: 1,
+  //   position: new CANNON.Vec3(0, 0, 0),
+  //   shape: roofShape,
+  //   material: defaultMaterial,
+  // });
+  // roofBody.position.copy(roof.position);
+  // //roofBody.quaternion.copy(roof.quaternion);
+  // roofBody.addEventListener('collide', playHitSound);
+  // world.addBody(roofBody);
+
+  //----------------------------------------------------------------
+  const vertices = [
+    new CANNON.Vec3(ROOF_WIDTH / 2, 0, 0), // Vertex 0
+    new CANNON.Vec3(0, 0, ROOF_WIDTH / 2), // Vertex 1
+    new CANNON.Vec3((-1 * ROOF_WIDTH) / 2, 0, 0), // Vertex 2
+    new CANNON.Vec3(0, 0, (-1 * ROOF_WIDTH) / 2), // Vertex 3
+    new CANNON.Vec3(0, ROOF_HEIGHT, 0), // Vertex 4
+  ];
+
+  const faces = [
+    [0, 4, 1], // Face 0 (triangle)
+    [1, 4, 2], // Face 1 (triangle)
+    [2, 4, 3], // Face 2 (triangle)
+    [3, 4, 0], // Face 3 (triangle)
+    [0, 1, 2], // Face 4 (triangle)
+    [0, 2, 4], // Face 5 (triangle)
+  ];
+
+  const tetrahedronShape = new CANNON.ConvexPolyhedron({
+    vertices,
+    faces,
   });
+
+  const roofBody = new CANNON.Body({
+    mass: 1, // Set mass
+    shape: tetrahedronShape,
+    position: new CANNON.Vec3(0, 10, 8),
+  });
+
   roofBody.position.copy(roof.position);
   //roofBody.quaternion.copy(roof.quaternion);
-  roofBody.addEventListener('collide', playHitSound);
+
   world.addBody(roofBody);
+  //----------------------------------------------------------------
 
   // Save in objects
   objectsToUpdate.push({ mesh: roof, body: roofBody });
